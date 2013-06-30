@@ -70,7 +70,7 @@ require_once ('patch_creator.php');
         <input id="github_username" name="github_username" type="text" maxlength="100" size="30" /><br />
         <span class="required" title="<?php echo _AT('github_password'); ?>">*</span><label for="github_password"><?php echo _AT('github_password'); ?></label><br />
         <input id="github_password" name="github_password" type="password" maxlength="100" size="30" /><br /><br />
-        <input type="submit" name="create" value=" <?php echo _AT('create_patch'); ?>"/>
+        <input type="submit" name="create_patch" value=" <?php echo _AT('create_patch'); ?>"/>
     </div>
 
     <div class="row buttons">
@@ -79,15 +79,39 @@ require_once ('patch_creator.php');
  </div>
 </form>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"> </script>
 <script>
-var X = "<div style='border-width:thin; border-style:solid; padding: 5px 5px 5px 5px; margin:5px 5px 5px 5px'> </div>";
+var X = '\
+<div style="border-width:thin; border-style:solid; padding: 5px 5px 5px 5px; margin:5px 5px 5px 5px">\
+<?php if (empty($mod_files) && empty($new_files) && empty($del_files)) { ?> \
+    <p> Please Make Changes First <br /> </p> \
+<?php } ?> \
+<?php if (!empty($mod_files) || !empty($new_files) || !empty($del_files)) { ?> \
+<?php if (!empty($mod_files)) { ?>
+    <h4>Modified Files</h4> \
+    <?php foreach($mod_files as $file) {?> \
+        <input type="checkbox" name="mod_select_file[]" value="<?php echo $file; ?>"><?php echo $file; ?> <br /> \
+    <?php } ?> \
+<?php } ?> \
+<?php if (!empty($del_files)) { ?>
+    <h4>Deleted Files</h4> \
+    <?php foreach($del_files as $file) {?> \
+        <input type="checkbox" name="del_select_file[]" value="<?php echo $file; ?>"><?php echo $file; ?> <br /> \
+    <?php } ?> \
+<?php } ?> \
+<?php if (!empty($new_files)) { ?>
+    <h4>New Files</h4> \
+    <?php foreach($new_files as $file) {?> \
+        <input type="checkbox" name="new_select_file[]" value="<?php echo $file; ?>"><?php echo $file; ?> <br /> \
+    <?php } ?> \
+<?php } ?> \
+<input type="submit" name="add_selected_files" value="<?php echo _AT("add_selected_files"); ?>"> \
+<?php } ?> \
+</div> \
+';
 
 $(document).ready(function(){
-    $("#select_files").click(function(){
-        $.ajax({url:"patch_creator.php", success:function() {
-            $("#files").html(X);
-        }})
+    $("#select_files").click(function() {
+        $("#files").html(X);
     });
 });
 </script>
