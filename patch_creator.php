@@ -44,43 +44,49 @@ function trim_value(&$value) {
     $value = trim($value);
 }
 
-$mod_files = array(); //store modified files
-$del_files = array(); //store deleted files
-$new_files = array(); //store new files
+$files = array();
+$files['mod'] = array(); //store modified files
+$files['del'] = array(); //store deleted files
+$files['new'] = array(); //store new files
 
-if (isset($_POST['select_files_to_add'])) {
+if (isset($_REQUEST['select_files_to_add'])) {
+    $repo->git('git checkout master');
     $result = $repo->git('git status -s');
-    $files = preg_split("/\r\n|\n|\r/", $result);
-    array_walk($files, 'trim_value');
-    foreach ($files as $get_type) {
+    $all_files = preg_split("/\r\n|\n|\r/", $result);
+    array_walk($all_files, 'trim_value');
+    foreach ($all_files as $get_type) {
         if ($get_type['0'] == 'M') {
             $get_type = str_replace("M", "", $get_type);
-            $mod_files[] = $get_type;
+            $files['mod'][] = $get_type;
         }
         else if ($get_type['0'] == 'D') {
             $get_type = str_replace("D", "", $get_type);
-            $del_files[] = $get_type;
+            $files['del'][] = $get_type;
         }
         else {
             $get_type = str_replace("??", "", $get_type);
-            $new_files[] = $get_type;
+            $files['new'][] = $get_type;
         }
     }
+    echo json_encode($files);
 }
 
 if(isset($_POST['add_selected_files'])) {
     if(empty($_POST['mod_select_file']) && empty($_POST['del_select_file']) && empty($_POST['new_select_file'])) {
-        //echo 'no file selected, plz select a file';
+        echo 'no file selected, plz select a file';
     }
     else {
+        if (!empty($_POST['mod_select_file']))
         foreach($_POST['mod_select_file'] as $check) {
             $repo->git('git add '.$check);
             echo $check ."added";
         }
+        if (!empty($_POST['new_select_file']))
         foreach($_POST['new_select_file'] as $check) {
             $repo->git('git add '.$check);
             echo $check ."added";
         }
+        if (!empty($_POST['del_select_file']))
         foreach($_POST['del_select_file'] as $check) {
             $repo->git('git rm '.$check);
             echo $check ."removed";
@@ -88,8 +94,6 @@ if(isset($_POST['add_selected_files'])) {
     }
 }
 
-//to test
-//$str = array(1,2,3);
 
 if (isset($_POST['commit'])) {
     if (!isset($_POST['commit_message']) || trim($_POST['commit_message']) == "") {
