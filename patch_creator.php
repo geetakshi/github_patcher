@@ -56,15 +56,15 @@ if (isset($_REQUEST['select_files_to_add'])) {
     array_walk($all_files, 'trim_value');
     foreach ($all_files as $get_type) {
         if ($get_type['0'] == 'M') {
-            $get_type = str_replace("M", "", $get_type);
+            $get_type = str_replace("M ", "", $get_type);
             $files['mod'][] = $get_type;
         }
         else if ($get_type['0'] == 'D') {
-            $get_type = str_replace("D", "", $get_type);
+            $get_type = str_replace("D ", "", $get_type);
             $files['del'][] = $get_type;
         }
         else {
-            $get_type = str_replace("??", "", $get_type);
+            $get_type = str_replace("?? ", "", $get_type);
             $files['new'][] = $get_type;
         }
     }
