@@ -19,18 +19,31 @@ admin_authenticate(AT_ADMIN_PRIV_GITHUB_PATCHER);
 require_once('php-git-repo/lib/PHPgit/Repository.php');
 
 if (isset($_POST['checkout'])) {
-    if(!isset($_POST['path_to_git_exec']) || trim($_POST['path_to_git_exec']) == "") {
+    if (!isset($_POST['path_to_git_exec']) || trim($_POST['path_to_git_exec']) == "") {
         $missing_fields[] = _AT('path_to_git_exec');
     }
     else {
-        $repo = new PHPGit_Repository('../../', false, array('git_executable' => '"'.$_POST['path_to_git_exec'].'"'));
+        try {
+            $repo = new PHPGit_Repository('../../google_talk', false, array('git_executable' => '"'.$_POST['path_to_git_exec'].'"'));
+            $repo->git('git status');
+        }
+        catch (RuntimeException $e) {
+            $msg->addError('INVALID_GIT_BINARY');
+        }
     }
 
-    if(!isset($_POST['new_branch_checkout']) || trim($_POST['new_branch_checkout']) == "") {
+    if (!isset($_POST['new_branch_checkout']) || trim($_POST['new_branch_checkout']) == "") {
         $missing_fields[] = _AT('new_branch_checkout');
     }
-    else {
-        $repo->git('git checkout -b '. $_POST['new_branch_checkout']);
+    else if (!$missing_fields) {
+        try {
+            $repo->git('git checkout -b '. $_POST['new_branch_checkout']);
+            $msg->addFeedback('Checked Out');
+            $msg->printFeedbacks();
+        }
+        catch (RuntimeException $e) {
+            $msg->addError('CANNOT_CHECKOUT');
+        }
     }
 
     if ($missing_fields) {
@@ -70,30 +83,6 @@ if (isset($_REQUEST['select_files_to_add'])) {
     echo json_encode($files);
 }
 
-if(isset($_POST['add_selected_files'])) {
-    if(empty($_POST['mod_select_file']) && empty($_POST['del_select_file']) && empty($_POST['new_select_file'])) {
-        echo 'no file selected, plz select a file';
-    }
-    else {
-        if (!empty($_POST['mod_select_file']))
-        foreach($_POST['mod_select_file'] as $check) {
-            $repo->git('git add '.$check);
-            echo $check ."added";
-        }
-        if (!empty($_POST['new_select_file']))
-        foreach($_POST['new_select_file'] as $check) {
-            $repo->git('git add '.$check);
-            echo $check ."added";
-        }
-        if (!empty($_POST['del_select_file']))
-        foreach($_POST['del_select_file'] as $check) {
-            $repo->git('git rm '.$check);
-            echo $check ."removed";
-        }
-    }
-}
-
-
 if (isset($_POST['commit'])) {
     if (!isset($_POST['commit_message']) || trim($_POST['commit_message']) == "") {
         $missing_fields[] = _AT('commit_message');
@@ -102,13 +91,38 @@ if (isset($_POST['commit'])) {
         $msg->printErrors();
     }
     else {
-        $repo->git('git commit -m "'.$_POST['commit_message'].'"');
+        if (!empty($_POST['mod_select_file']))
+        foreach($_POST['mod_select_file'] as $check) {
+            $repo->git('git add '.$check);
+        }
+        if (!empty($_POST['new_select_file']))
+        foreach($_POST['new_select_file'] as $check) {
+            $repo->git('git add '.$check);
+        }
+        if (!empty($_POST['del_select_file']))
+        foreach($_POST['del_select_file'] as $check) {
+            $repo->git('git rm '.$check);
+        }
+        try {
+            $repo->git('git commit -m "'.$_POST['commit_message'].'"');
+            $msg->addFeedback('COMMITTED');
+            $msg->printFeedbacks();
+        }
+        catch (RuntimeException $e) {
+            $msg->printErrors('CANNOT_COMMIT');
+        }
     }
 }
 
-if(isset($_POST['push'])) {
-    $repo->git('git push origin '.$_POST['new_branch_checkout']);
+if (isset($_POST['push'])) {
+    try {
+        $repo->git('git push origin '.$_POST['new_branch_checkout']);
+        $msg->addFeedback('PUSHED');
+        $msg->printFeedbacks();
+    }
+    catch (RuntimeException $e) {
+        $msg->printErrors('CANNOT_PUSH');
+    }
 }
-
 
 ?>
