@@ -50,7 +50,6 @@ $files['del'] = array(); //store deleted files
 $files['new'] = array(); //store new files
 
 if (isset($_REQUEST['select_files_to_add'])) {
-    $repo->git('git checkout master');
     $result = $repo->git('git status -s');
     $all_files = preg_split("/\r\n|\n|\r/", $result);
     array_walk($all_files, 'trim_value');
