@@ -23,12 +23,6 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 <div id="messageDIV"></div>
 
     <div class="row">
-        <label for="path_to_git_exec"><?php echo _AT('path_to_git_exec'); ?></label><br />
-        <small><p>On most Unix system, it's '/usr/bin/git'. On Windows, it may be 'C:\Program Files\Git\bin'. </p></small>
-        <input id="path_to_git_exec" name="path_to_git_exec" type="text" maxlength="100" size="50" /><br />
-    </div>
-
-    <div class="row">
         <h2><?php echo _AT('step1_checkout'); ?></h2><br />
         <p> Input name of new branch to checkout </p>
         <label for="new_branch_checkout"><?php echo _AT('new_branch_checkout'); ?></label><br />

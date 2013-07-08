@@ -18,18 +18,18 @@ admin_authenticate(AT_ADMIN_PRIV_GITHUB_PATCHER);
 
 require_once('php-git-repo/lib/PHPgit/Repository.php');
 
+if (!isset($_config['path_to_git_exec'])) {
+    $msg->printErrors('PATH_TO_GIT_EXEC_EMPTY');
+}
+
+$repo = new PHPGit_Repository('../../', false, array('git_executable' => '"'.$_config['path_to_git_exec'].'"'));
+
 if (isset($_POST['checkout'])) {
-    if (!isset($_POST['path_to_git_exec']) || trim($_POST['path_to_git_exec']) == "") {
-        $missing_fields[] = _AT('path_to_git_exec');
+    try {
+        $repo->git('git status');
     }
-    else {
-        try {
-            $repo = new PHPGit_Repository('../../google_talk', false, array('git_executable' => '"'.$_POST['path_to_git_exec'].'"'));
-            $repo->git('git status');
-        }
-        catch (RuntimeException $e) {
-            $msg->addError('INVALID_GIT_BINARY');
-        }
+    catch (RuntimeException $e) {
+        $msg->addError('INVALID_GIT_BINARY');
     }
 
     if (!isset($_POST['new_branch_checkout']) || trim($_POST['new_branch_checkout']) == "") {
@@ -38,7 +38,7 @@ if (isset($_POST['checkout'])) {
     else if (!$missing_fields) {
         try {
             $repo->git('git checkout -b '. $_POST['new_branch_checkout']);
-            $msg->addFeedback('Checked Out');
+            $msg->addFeedback('CHECKED_OUT');
             $msg->printFeedbacks();
         }
         catch (RuntimeException $e) {
