@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <module version="0.1"> 
     <name lang="en">GitHub Patcher</name> 
-    <description lang="en"></description> 
+    <description lang="en">This is 'github based patcher' module for ATutor</description> 
     <description lang="en"></description> 
     <maintainers>
         <maintainer> 
