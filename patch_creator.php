@@ -17,6 +17,7 @@ require_once (AT_INCLUDE_PATH.'vitals.inc.php');
 admin_authenticate(AT_ADMIN_PRIV_GITHUB_PATCHER);
 
 require_once('php-git-repo/lib/PHPgit/Repository.php');
+require_once('php-github-api/library/autoload.php');
 
 if (!isset($_config['path_to_git_exec'])) {
     $msg->printErrors('PATH_TO_GIT_EXEC_EMPTY');
@@ -116,12 +117,42 @@ if (isset($_POST['commit'])) {
 
 if (isset($_POST['push'])) {
     try {
-        $repo->git('git push origin '.$_POST['new_branch_checkout']);
+        $repo->git('git push https://'.$_config["git_username"].':'.$_POST["git_password"].'@github.com/'.$_config["git_username"].'/ATutor.git '.$_POST["new_branch_checkout"]);
         $msg->addFeedback('PUSHED');
         $msg->printFeedbacks();
     }
     catch (RuntimeException $e) {
         $msg->printErrors('CANNOT_PUSH');
+    }
+}
+
+$client = new Github\Client();
+
+if (isset($_POST['create_patch'])) {
+    if (!isset($_POST['github_password']) || trim($_POST['github_password']) == "") {
+        $missing_fields[] = _AT('github_password');
+        $missing_fields = implode(', ', $missing_fields);
+        $msg->addError(array('EMPTY_FIELDS', $missing_fields));
+        $msg->printErrors();
+    }
+
+    $method = Github\Client::AUTH_HTTP_PASSWORD;
+    $username = $_config['github_username'];
+    $password = $_POST['github_password'];
+
+    $client->authenticate($username, $password, $method);
+    try {
+        $pullRequest = $client->api('pull_request')->create('atutor', 'ATutor', array(
+            'base'  => 'master',
+            'head'  => $_POST['new_branch_checkout'],
+            'title' => $_POST['pr_title'],
+            'body'  => $_POST['pr_body']
+        ));
+        $msg->addFeedback('PR_SUCCESS');
+        $msg->printFeedbacks();
+    }
+    catch (RuntimeException $e) {
+        $msg->printErrors('PR_FAILED');
     }
 }
 

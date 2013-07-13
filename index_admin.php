@@ -8,15 +8,33 @@ admin_authenticate(AT_ADMIN_PRIV_GITHUB_PATCHER);
 
 if (isset($_POST['submit'])) {
     $_POST['path_to_git_exec'] = trim($_POST['path_to_git_exec']);
+    $_POST['github_username'] = trim($_POST['github_username']);
+    $_POST['git_username'] = trim($_POST['git_username']);
 
     if (!$_POST['path_to_git_exec']){
-        $msg->addError('GITHUB_PATCHER_ADD_EMPTY');
+        $msg->addError('GITHUB_PATCHER_GIT_EXE_EMPTY');
+    }
+
+    if (!$_POST['git_username']){
+        $msg->addError('GITHUB_PATCHER_GIT_USERNAME_EMPTY');
+    }
+
+    if (!$_POST['github_username']){
+        $msg->addError('GITHUB_PATCHER_USERNAME_EMPTY');
     }
 
     if (!$msg->containsErrors()) {
         $_POST['path_to_git_exec'] = $addslashes($_POST['path_to_git_exec']);
         queryDB('REPLACE INTO %sconfig VALUES ("path_to_git_exec", "%s")', array(TABLE_PREFIX, $_POST['path_to_git_exec']));
         $msg->addFeedback('GITHUB_PATCHER_GIT_EXEC_SAVED');
+
+        $_POST['git_username'] = $addslashes($_POST['git_username']);
+        queryDB('REPLACE INTO %sconfig VALUES ("git_username", "%s")', array(TABLE_PREFIX, $_POST['git_username']));
+        $msg->addFeedback('GITHUB_PATCHER_GIT_USERNAME_SAVED');
+
+        $_POST['github_username'] = $addslashes($_POST['github_username']);
+        queryDB('REPLACE INTO %sconfig VALUES ("github_username", "%s")', array(TABLE_PREFIX, $_POST['github_username']));
+        $msg->addFeedback('GITHUB_PATCHER_USERNAME_SAVED');
 
         header('Location: '.$_SERVER['PHP_SELF']);
         exit;
@@ -26,20 +44,23 @@ if (isset($_POST['submit'])) {
 require (AT_INCLUDE_PATH.'header.inc.php');
 
 ?>
-
-<?php if ($_config['path_to_git_exec']): ?>
-    <div class="input-form">
-        <div class="row">
-            <p><?php echo _AT('github_patcher_text'); ?></p>
-        </div>
-    </div>
-<?php else: ?>
-    <div class="input-form">
-        <div class="row">
-            <p><?php echo _AT('github_patcher_missing_git_exec');  ?></p>
-        </div>
-    </div>
+<div class="input-form">
+<div class="row">
+<?php if ($_config['path_to_git_exec'] && $_config['github_username'] && $_config['git_username']): ?>
+        <p><?php echo _AT('github_patcher_text'); ?></p>
+<?php else : ?>
+    <?php if (!isset($_config['path_to_git_exec'])): ?>
+        <p><?php echo _AT('github_patcher_missing_git_exec');  ?></p>
+    <?php endif; ?>
+    <?php if (!isset($_config['github_username'])): ?>
+        <p><?php echo _AT('github_patcher_missing_username');  ?></p>
+    <?php endif; ?>
+    <?php if (!isset($_config['git_username'])): ?>
+            <p><?php echo _AT('github_patcher_missing_git_username');  ?></p>
+    <?php endif; ?>
 <?php endif; ?>
+</div>
+</div>
 
 <form action="<?php  $_SERVER['PHP_SELF']; ?>" method="post">
     <div class="input-form">
@@ -47,6 +68,14 @@ require (AT_INCLUDE_PATH.'header.inc.php');
             <p><label for="path_to_git_exec"><?php echo _AT('path_to_git_exec'); ?></label></p>
             <small><p>On most Unix system, it's '/usr/bin/git'. On Windows, it may be 'C:\Program Files\Git\bin'. </p></small>
             <input type="text" name="path_to_git_exec" value="<?php echo $_config['path_to_git_exec']; ?>" id="path_to_git_exec" size="30" style="min-width: 65%;" />
+        </div>
+        <div class="row">
+            <p><label for="git_username"><?php echo _AT('git_username'); ?></label></p>
+            <input type="text" name="git_username" value="<?php echo $_config['git_username']; ?>" id="git_username" size="30" style="min-width: 65%;" />
+        </div>
+        <div class="row">
+            <p><label for="github_username"><?php echo _AT('github_username'); ?></label></p>
+            <input type="text" name="github_username" value="<?php echo $_config['github_username']; ?>" id="github_username" size="30" style="min-width: 65%;" />
         </div>
         <div class="row buttons">
             <input type="submit" name="submit" value="<?php echo _AT('save'); ?>"  />

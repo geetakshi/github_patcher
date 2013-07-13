@@ -52,6 +52,8 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 
     <div class="row">
         <h2><?php echo _AT('step5_push') ?></h2><br />
+        <label for="git_password"><?php echo _AT('git_password'); ?></label><br />
+        <input id="git_password" name="git_password" type="password" maxlength="100" size="30" /><br /><br />
         <p> Push the Changes </p>
         <input type="submit" name="push" value=" <?php echo _AT('push'); ?> "/>
     </div>
@@ -59,10 +61,12 @@ require (AT_INCLUDE_PATH.'header.inc.php');
     <div class="row">
         <h2><?php echo _AT('step6_create') ?></h2><br />
         <p> Create a patch to be available as a Pull Request on GitHub </p>
-        <span class="required" title="<?php echo _AT('github_username'); ?>">*</span><label for="github_username"><?php echo _AT('github_username'); ?></label><br />
-        <input id="github_username" name="github_username" type="text" maxlength="100" size="30" /><br />
         <span class="required" title="<?php echo _AT('github_password'); ?>">*</span><label for="github_password"><?php echo _AT('github_password'); ?></label><br />
         <input id="github_password" name="github_password" type="password" maxlength="100" size="30" /><br /><br />
+        <label for="pr_title"><?php echo _AT('pr_title'); ?></label><br />
+        <textarea id="pr_title" name="pr_title" rows="1" cols="20" ></textarea><br />
+        <label for="pr_body"><?php echo _AT('pr_body'); ?></label><br />
+        <textarea id="pr_body" name="pr_body" rows="4" cols="20" ></textarea><br />
         <input type="submit" name="create_patch" value=" <?php echo _AT('create_patch'); ?>"/>
     </div>
 
