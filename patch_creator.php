@@ -105,7 +105,7 @@ if (isset($_POST['commit'])) {
             $repo->git('git rm '.$check);
         }
         try {
-            $repo->git('git commit -m "'.$_POST['commit_message'].'"');
+            $repo->git('git commit -m "'.$_POST['commit_message'].'" --author="'.$_config['git_username'].'<'.$_config['git_email'].'>"');
             $msg->addFeedback('COMMITTED');
             $msg->printFeedbacks();
         }
@@ -117,7 +117,7 @@ if (isset($_POST['commit'])) {
 
 if (isset($_POST['push'])) {
     try {
-        $repo->git('git push https://'.$_config["git_username"].':'.$_POST["git_password"].'@github.com/'.$_config["git_username"].'/ATutor.git '.$_POST["new_branch_checkout"]);
+        $repo->git('git push https://'.$_POST["github_username"].':'.$_POST["github_password"].'@github.com/'.$_POST["github_username"].'/ATutor.git '.$_POST["new_branch_checkout"]);
         $msg->addFeedback('PUSHED');
         $msg->printFeedbacks();
     }
@@ -131,13 +131,17 @@ $client = new Github\Client();
 if (isset($_POST['create_patch'])) {
     if (!isset($_POST['github_password']) || trim($_POST['github_password']) == "") {
         $missing_fields[] = _AT('github_password');
-        $missing_fields = implode(', ', $missing_fields);
-        $msg->addError(array('EMPTY_FIELDS', $missing_fields));
-        $msg->printErrors();
+    }
+    if (!isset($_POST['github_username']) || trim($_POST['github_username']) == "") {
+        $missing_fields[] = _AT('github_username');
     }
 
+    $missing_fields = implode(', ', $missing_fields);
+    $msg->addError(array('EMPTY_FIELDS', $missing_fields));
+    $msg->printErrors();
+
     $method = Github\Client::AUTH_HTTP_PASSWORD;
-    $username = $_config['github_username'];
+    $username = $_POST['github_username'];
     $password = $_POST['github_password'];
 
     $client->authenticate($username, $password, $method);

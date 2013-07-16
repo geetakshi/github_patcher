@@ -61,7 +61,9 @@ require (AT_INCLUDE_PATH.'header.inc.php');
     <div class="row">
         <h2><?php echo _AT('step6_create') ?></h2><br />
         <p> Create a patch to be available as a Pull Request on GitHub </p>
-        <span class="required" title="<?php echo _AT('github_password'); ?>">*</span><label for="github_password"><?php echo _AT('github_password'); ?></label><br />
+        <label for="github_username"><?php echo _AT('github_username'); ?></label><br />
+        <input id="github_username" name="github_username" type="text" maxlength="100" size="30" /><br /><br />
+        <label for="github_password"><?php echo _AT('github_password'); ?></label><br />
         <input id="github_password" name="github_password" type="password" maxlength="100" size="30" /><br /><br />
         <label for="pr_title"><?php echo _AT('pr_title'); ?></label><br />
         <textarea id="pr_title" name="pr_title" rows="1" cols="20" ></textarea><br />

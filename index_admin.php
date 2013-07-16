@@ -8,7 +8,7 @@ admin_authenticate(AT_ADMIN_PRIV_GITHUB_PATCHER);
 
 if (isset($_POST['submit'])) {
     $_POST['path_to_git_exec'] = trim($_POST['path_to_git_exec']);
-    $_POST['github_username'] = trim($_POST['github_username']);
+    $_POST['git_email'] = trim($_POST['git_email']);
     $_POST['git_username'] = trim($_POST['git_username']);
 
     if (!$_POST['path_to_git_exec']){
@@ -19,8 +19,8 @@ if (isset($_POST['submit'])) {
         $msg->addError('GITHUB_PATCHER_GIT_USERNAME_EMPTY');
     }
 
-    if (!$_POST['github_username']){
-        $msg->addError('GITHUB_PATCHER_USERNAME_EMPTY');
+    if (!$_POST['git_email']){
+        $msg->addError('GITHUB_PATCHER_GIT_EMAIL_EMPTY');
     }
 
     if (!$msg->containsErrors()) {
@@ -32,9 +32,9 @@ if (isset($_POST['submit'])) {
         queryDB('REPLACE INTO %sconfig VALUES ("git_username", "%s")', array(TABLE_PREFIX, $_POST['git_username']));
         $msg->addFeedback('GITHUB_PATCHER_GIT_USERNAME_SAVED');
 
-        $_POST['github_username'] = $addslashes($_POST['github_username']);
-        queryDB('REPLACE INTO %sconfig VALUES ("github_username", "%s")', array(TABLE_PREFIX, $_POST['github_username']));
-        $msg->addFeedback('GITHUB_PATCHER_USERNAME_SAVED');
+        $_POST['git_email'] = $addslashes($_POST['git_email']);
+        queryDB('REPLACE INTO %sconfig VALUES ("git_email", "%s")', array(TABLE_PREFIX, $_POST['git_email']));
+        $msg->addFeedback('GITHUB_PATCHER_GIT_EMAIL_SAVED');
 
         header('Location: '.$_SERVER['PHP_SELF']);
         exit;
@@ -46,14 +46,14 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 ?>
 <div class="input-form">
 <div class="row">
-<?php if ($_config['path_to_git_exec'] && $_config['github_username'] && $_config['git_username']): ?>
+<?php if ($_config['path_to_git_exec'] && $_config['git_email'] && $_config['git_username']): ?>
         <p><?php echo _AT('github_patcher_text'); ?></p>
 <?php else : ?>
     <?php if (!isset($_config['path_to_git_exec'])): ?>
         <p><?php echo _AT('github_patcher_missing_git_exec');  ?></p>
     <?php endif; ?>
-    <?php if (!isset($_config['github_username'])): ?>
-        <p><?php echo _AT('github_patcher_missing_username');  ?></p>
+    <?php if (!isset($_config['git_email'])): ?>
+        <p><?php echo _AT('github_patcher_missing_git_email');  ?></p>
     <?php endif; ?>
     <?php if (!isset($_config['git_username'])): ?>
             <p><?php echo _AT('github_patcher_missing_git_username');  ?></p>
@@ -74,8 +74,8 @@ require (AT_INCLUDE_PATH.'header.inc.php');
             <input type="text" name="git_username" value="<?php echo $_config['git_username']; ?>" id="git_username" size="30" style="min-width: 65%;" />
         </div>
         <div class="row">
-            <p><label for="github_username"><?php echo _AT('github_username'); ?></label></p>
-            <input type="text" name="github_username" value="<?php echo $_config['github_username']; ?>" id="github_username" size="30" style="min-width: 65%;" />
+            <p><label for="git_email"><?php echo _AT('git_email'); ?></label></p>
+            <input type="text" name="git_email" value="<?php echo $_config['git_email']; ?>" id="git_email" size="30" style="min-width: 65%;" />
         </div>
         <div class="row buttons">
             <input type="submit" name="submit" value="<?php echo _AT('save'); ?>"  />
