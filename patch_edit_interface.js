@@ -1,8 +1,29 @@
+/************************************************************************/
+/* ATutor                                                               */
+/************************************************************************/
+/* Copyright (c) 2002-2013                                              */
+/* Inclusive Design Institute                                           */
+/* http://atutor.ca                                                     */
+/*                                                                      */
+/* This program is free software. You can redistribute it and/or        */
+/* modify it under the terms of the GNU General Public License          */
+/* as published by the Free Software Foundation.                        */
+/************************************************************************/
+// $Id$
+
+// @author Geetakshi Batra
+
+/*global jQuery*/
+/*global ATutor */
+
 ATutor = ATutor || {};
 ATutor.mods = ATutor.mods || {};
 ATutor.mods.github_patcher = ATutor.mods.github_patcher || {};
 
-
+/**
+* Function to show the unstaged files available for selection by user to add and commit files
+* @author    Geetakshi Batra
+*/
 $(document).ready(function() {
     $("#select_files").click(function() {
         $.post('mods/github_patcher/patch_creator.php', {'select_files_to_add': 1}, function(obj) {

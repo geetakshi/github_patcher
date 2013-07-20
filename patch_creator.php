@@ -2,7 +2,7 @@
 /************************************************************************/
 /* ATutor                                                               */
 /************************************************************************/
-/* Copyright (c) 2002-2010                                              */
+/* Copyright (c) 2002-2013                                              */
 /* Inclusive Design Institute                                           */
 /* http://atutor.ca                                                     */
 /*                                                                      */
@@ -25,6 +25,7 @@ if (!isset($_config['path_to_git_exec'])) {
 
 $repo = new PHPGit_Repository('../../', false, array('git_executable' => '"'.$_config['path_to_git_exec'].'"'));
 
+//Checking out to a new branch to make changes
 if (isset($_POST['checkout'])) {
     try {
         $repo->git('git status');
@@ -55,15 +56,18 @@ if (isset($_POST['checkout'])) {
     }
     $msg->printErrors();
 }
-
+/**
+* Function to trim each array value using trim()
+*/
 function trim_value(&$value) {
     $value = trim($value);
 }
 
+//Adding modified, new and deleted files to respective arrays
 $files = array();
-$files['mod'] = array(); //store modified files
-$files['del'] = array(); //store deleted files
-$files['new'] = array(); //store new files
+$files['mod'] = array(); //Array to store modified files
+$files['del'] = array(); //Array to store deleted files
+$files['new'] = array(); //Array to store new files
 
 if (isset($_REQUEST['select_files_to_add'])) {
     $result = $repo->git('git status -s');
@@ -86,6 +90,7 @@ if (isset($_REQUEST['select_files_to_add'])) {
     echo json_encode($files);
 }
 
+//Adding and Committing files
 if (isset($_POST['commit'])) {
     $_POST['commit_message'] = trim($_POST['commit_message']);
     if (!isset($_POST['commit_message'])) {
@@ -118,6 +123,7 @@ if (isset($_POST['commit'])) {
     }
 }
 
+//Pushing the committed files
 if (isset($_POST['push'])) {
     try {
         $_POST['github_username'] = trim($_POST['github_username']);
@@ -131,6 +137,7 @@ if (isset($_POST['push'])) {
     }
 }
 
+//Making a Pull Request out of the pushed changes
 $client = new Github\Client();
 
 if (isset($_POST['create_patch'])) {

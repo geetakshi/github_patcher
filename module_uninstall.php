@@ -34,10 +34,6 @@ if (!$msg->containsErrors() && file_exists(dirname(__FILE__) . '/module.sql')) {
     require(AT_INCLUDE_PATH . 'classes/sqlutility.class.php');
     $sqlUtility = new SqlUtility();
 
-    /*
-     * the SQL file could be stored anywhere, and named anything, "module.sql" is simply
-     * a convention we're using.
-     */
     $sqlUtility->revertQueryFromFile(dirname(__FILE__) . '/module.sql', TABLE_PREFIX);
 }
 

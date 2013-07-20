@@ -1,4 +1,17 @@
 <?php
+/************************************************************************/
+/* ATutor                                                               */
+/************************************************************************/
+/* Copyright (c) 2002-2013                                              */
+/* Inclusive Design Institute                                           */
+/* http://atutor.ca                                                     */
+/*                                                                      */
+/* This program is free software. You can redistribute it and/or        */
+/* modify it under the terms of the GNU General Public License          */
+/* as published by the Free Software Foundation.                        */
+/************************************************************************/
+// $Id$
+
 define('AT_INCLUDE_PATH', '../../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
 
@@ -23,6 +36,7 @@ if (isset($_POST['submit'])) {
         $msg->addError('GITHUB_PATCHER_GIT_EMAIL_EMPTY');
     }
 
+    //storing the path to git executable, git username, and git email-id in the database
     if (!$msg->containsErrors()) {
         $_POST['path_to_git_exec'] = $addslashes($_POST['path_to_git_exec']);
         queryDB('REPLACE INTO %sconfig VALUES ("path_to_git_exec", "%s")', array(TABLE_PREFIX, $_POST['path_to_git_exec']));
