@@ -33,7 +33,9 @@ if (isset($_POST['checkout'])) {
         $msg->addError('INVALID_GIT_BINARY');
     }
 
-    if (!isset($_POST['new_branch_checkout']) || trim($_POST['new_branch_checkout']) == "") {
+    $_POST['new_branch_checkout'] = trim($_POST['new_branch_checkout']);
+
+    if (!isset($_POST['new_branch_checkout'])) {
         $missing_fields[] = _AT('new_branch_checkout');
     }
     else if (!$missing_fields) {
@@ -85,7 +87,8 @@ if (isset($_REQUEST['select_files_to_add'])) {
 }
 
 if (isset($_POST['commit'])) {
-    if (!isset($_POST['commit_message']) || trim($_POST['commit_message']) == "") {
+    $_POST['commit_message'] = trim($_POST['commit_message']);
+    if (!isset($_POST['commit_message'])) {
         $missing_fields[] = _AT('commit_message');
         $missing_fields = implode(', ', $missing_fields);
         $msg->addError(array('EMPTY_FIELDS', $missing_fields));
@@ -105,7 +108,7 @@ if (isset($_POST['commit'])) {
             $repo->git('git rm '.$check);
         }
         try {
-            $repo->git('git commit -m "'.$_POST['commit_message'].'" --author="'.$_config['git_username'].'<'.$_config['git_email'].'>"');
+            $repo->git('git commit -m "'.$_POST['commit_message'].'" --author="'.$_config['git_username'].' < '.$_config['git_email'].' >'.'"');
             $msg->addFeedback('COMMITTED');
             $msg->printFeedbacks();
         }
@@ -117,6 +120,8 @@ if (isset($_POST['commit'])) {
 
 if (isset($_POST['push'])) {
     try {
+        $_POST['github_username'] = trim($_POST['github_username']);
+        $_POST['github_password'] = trim($_POST['github_password']);
         $repo->git('git push https://'.$_POST["github_username"].':'.$_POST["github_password"].'@github.com/'.$_POST["github_username"].'/ATutor.git '.$_POST["new_branch_checkout"]);
         $msg->addFeedback('PUSHED');
         $msg->printFeedbacks();
@@ -129,10 +134,10 @@ if (isset($_POST['push'])) {
 $client = new Github\Client();
 
 if (isset($_POST['create_patch'])) {
-    if (!isset($_POST['github_password']) || trim($_POST['github_password']) == "") {
+    if (!isset($_POST['github_password'])) {
         $missing_fields[] = _AT('github_password');
     }
-    if (!isset($_POST['github_username']) || trim($_POST['github_username']) == "") {
+    if (!isset($_POST['github_username'])) {
         $missing_fields[] = _AT('github_username');
     }
 
