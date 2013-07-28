@@ -45,7 +45,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
     <div class="row">
         <h2><?php echo _AT('step3_commit') ?></h2><br />
         <p> Commit the made changes </p>
-        <input type="button" name="select_files_to_add" value="select_files_to_add" id="select_files"/><br />
+        <input type="button" name="select_files_to_add" value=" <?php echo _AT('select_files_to_add'); ?> " id="select_files"/><br />
         <div id="files"></div>
         <label for="commit_message"><?php echo _AT('commit_message'); ?></label><br />
         <textarea id="commit_message" name="commit_message" rows="4" cols="20" ></textarea><br />
