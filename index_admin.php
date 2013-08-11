@@ -15,9 +15,12 @@
 define('AT_INCLUDE_PATH', '../../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
 
+require_once('php-git-repo/lib/PHPgit/Repository.php');
+
 // make sure user is allowed to see this page (admins only)
 
 admin_authenticate(AT_ADMIN_PRIV_GITHUB_PATCHER);
+
 
 if (isset($_POST['submit'])) {
     $_POST['path_to_git_exec'] = trim($_POST['path_to_git_exec']);
@@ -39,8 +42,17 @@ if (isset($_POST['submit'])) {
     //storing the path to git executable, git username, and git email-id in the database
     if (!$msg->containsErrors()) {
         $_POST['path_to_git_exec'] = $addslashes($_POST['path_to_git_exec']);
-        queryDB('REPLACE INTO %sconfig VALUES ("path_to_git_exec", "%s")', array(TABLE_PREFIX, $_POST['path_to_git_exec']));
-        $msg->addFeedback('GITHUB_PATCHER_GIT_EXEC_SAVED');
+        $git_repo = new PHPGit_Repository('../../', false, array('git_executable' => '"'.$_POST['path_to_git_exec'].'"'));
+        try {
+            $git_repo->git('git status');
+        }
+        catch (RuntimeException $e) {
+            $msg->addError('INVALID_GIT_BINARY');
+        }
+        if(!$msg->containsErrors()) {
+            queryDB('REPLACE INTO %sconfig VALUES ("path_to_git_exec", "%s")', array(TABLE_PREFIX, $_POST['path_to_git_exec']));
+            $msg->addFeedback('GITHUB_PATCHER_GIT_EXEC_SAVED');
+        }
 
         $_POST['git_username'] = $addslashes($_POST['git_username']);
         queryDB('REPLACE INTO %sconfig VALUES ("git_username", "%s")', array(TABLE_PREFIX, $_POST['git_username']));
