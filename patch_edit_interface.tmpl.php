@@ -23,15 +23,8 @@ require (AT_INCLUDE_PATH.'header.inc.php');
     <div id="messageDIV"></div>
 
     <div class="row">
-        <label for="github_username"><?php echo _AT('github_username'); ?></label><br />
-        <input id="github_username" name="github_username" type="text" maxlength="100" size="30" /><br />
-        <label for="github_password"><?php echo _AT('github_password'); ?></label><br />
-        <input id="github_password" name="github_password" type="password" maxlength="100" size="30" /><br />
-    </div>
-
-    <div class="row">
         <h2><?php echo _AT('step1_checkout'); ?></h2><br />
-        <p> Input name of new branch to checkout </p>
+        <p> <?php echo _AT('input_new_branch'); ?> </p>
         <label for="new_branch_checkout"><?php echo _AT('new_branch_checkout'); ?></label><br />
         <input id="new_branch_checkout" name="new_branch_checkout" type="text" maxlength="100" size="30" />
         <input type="submit" name="checkout" value=" <?php echo _AT('checkout'); ?> "/> <br />
@@ -39,12 +32,12 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 
     <div class="row">
         <h2><?php echo _AT('step2_changes') ?></h2><br />
-        <p> Make Changes in files </p>
+        <p> <?php echo _AT('make_changes'); ?> </p>
     </div>
 
     <div class="row">
         <h2><?php echo _AT('step3_commit') ?></h2><br />
-        <p> Commit the made changes </p>
+        <p> <?php echo _AT('commit_changes'); ?> </p>
         <input type="button" name="select_files_to_add" value=" <?php echo _AT('select_files_to_add'); ?> " id="select_files"/><br />
         <div id="files"></div>
         <label for="commit_message"><?php echo _AT('commit_message'); ?></label><br />
@@ -54,18 +47,26 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 
     <div class="row">
         <h2><?php echo _AT('step4_test') ?></h2><br />
-        <p> Test the Changes before making a Patch </p>
+        <p> <?php echo _AT('test_changes'); ?> </p>
+    </div>
+
+    <div class="row" style="border-width:thin; border-style:solid; padding: 5px 5px 5px 5px; margin:5px 5px 5px 5px">
+        <h4><?php echo _AT('github_credentials') ?></h4><br />
+        <label for="github_username"><?php echo _AT('github_username'); ?></label><br />
+        <input id="github_username" name="github_username" type="text" maxlength="100" size="30" /><br />
+        <label for="github_password"><?php echo _AT('github_password'); ?></label><br />
+        <input id="github_password" name="github_password" type="password" maxlength="100" size="30" /><br />
     </div>
 
     <div class="row">
         <h2><?php echo _AT('step5_push') ?></h2><br />
-        <p> Push the Changes </p>
+        <p> <?php echo _AT('push_changes'); ?> </p>
         <input type="submit" name="push" value=" <?php echo _AT('push'); ?> "/>
     </div>
 
     <div class="row">
         <h2><?php echo _AT('step6_create') ?></h2><br />
-        <p> Create a patch to be available as a Pull Request on GitHub </p>
+        <p> <?php echo _AT('create_pr'); ?> </p>
         <label for="pr_title"><?php echo _AT('pr_title'); ?></label><br />
         <textarea id="pr_title" name="pr_title" rows="1" cols="20" ></textarea><br />
         <label for="pr_body"><?php echo _AT('pr_body'); ?></label><br />
