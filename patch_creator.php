@@ -19,9 +19,6 @@ admin_authenticate(AT_ADMIN_PRIV_GITHUB_PATCHER);
 require_once('php-git-repo/lib/PHPgit/Repository.php');
 require_once('php-github-api/library/autoload.php');
 
-if (!isset($_config['path_to_git_exec'])) {
-    $msg->printErrors('PATH_TO_GIT_EXEC_EMPTY');
-}
 
 $repo = new PHPGit_Repository('../../', false, array('git_executable' => '"'.$_config['path_to_git_exec'].'"'));
 
@@ -102,15 +99,30 @@ if (isset($_POST['commit'])) {
     else {
         if (!empty($_POST['mod_select_file']))
         foreach($_POST['mod_select_file'] as $check) {
-            $repo->git('git add '.$check);
+            try {
+                $repo->git('git add '.$check);
+            }
+            catch (RuntimeException $e) {
+                $msg->addError('UNABLE_TO_ADD_MOD');
+            }
         }
         if (!empty($_POST['new_select_file']))
         foreach($_POST['new_select_file'] as $check) {
-            $repo->git('git add '.$check);
+            try {
+                $repo->git('git add '.$check);
+            }
+            catch (RuntimeException $e) {
+                $msg->addError('UNABLE_TO_ADD_NEW');
+            }
         }
         if (!empty($_POST['del_select_file']))
         foreach($_POST['del_select_file'] as $check) {
-            $repo->git('git rm '.$check);
+            try {
+                $repo->git('git rm '.$check);
+            }
+            catch (RuntimeException $e) {
+                $msg->addError('UNABLE_TO_DELETE');
+            }
         }
         try {
             $repo->git('git commit -m "'.$_POST['commit_message'].'" --author="'.$_config['git_username'].' < '.$_config['git_email'].' >'.'"');
@@ -118,8 +130,9 @@ if (isset($_POST['commit'])) {
             $msg->printFeedbacks();
         }
         catch (RuntimeException $e) {
-            $msg->printErrors('CANNOT_COMMIT');
+            $msg->addError('CANNOT_COMMIT');
         }
+        $msg->printErrors();
     }
 }
 
