@@ -40,13 +40,17 @@ if (admin_authenticate(AT_ADMIN_PRIV_GITHUB_PATCHER, TRUE) || admin_authenticate
     $this->_pages['mods/github_patcher/index_admin.php']['title_var'] = 'github_patcher';
     $this->_pages['mods/github_patcher/index_admin.php']['parent']    = AT_NAV_ADMIN;
 
-    $this->_pages['mods/github_patcher/index_admin.php']['children'] = array('mods/github_patcher/myown_patches.php','mods/github_patcher/patch_create.php');
-    $this->_pages['mods/github_patcher/myown_patches.php']['title_var'] = 'myown_patches';
-    $this->_pages['mods/github_patcher/myown_patches.php']['parent']   = 'mods/github_patcher/index_admin.php';
+    $this->_pages['mods/github_patcher/index_admin.php']['children'] = array('mods/github_patcher/closed_patches.php', 'mods/github_patcher/open_patches.php', 'mods/github_patcher/patch_create.php');
+    $this->_pages['mods/github_patcher/closed_patches.php']['title_var'] = 'closed_patches';
+    $this->_pages['mods/github_patcher/closed_patches.php']['parent']   = 'mods/github_patcher/index_admin.php';
 
-    $this->_pages['mods/github_patcher/myown_patches.php']['children'] = array('mods/github_patcher/patch_create.php');
+    $this->_pages['mods/github_patcher/closed_patches.php']['children'] = array('mods/github_patcher/open_patches.php', 'mods/github_patcher/patch_create.php');
+    $this->_pages['mods/github_patcher/open_patches.php']['title_var'] = 'open_patches';
+    $this->_pages['mods/github_patcher/open_patches.php']['parent']   = 'mods/github_patcher/closed_patches.php';
+
+    $this->_pages['mods/github_patcher/open_patches.php']['children'] = array('mods/github_patcher/patch_create.php');
     $this->_pages['mods/github_patcher/patch_create.php']['title_var'] = 'create_patch';
-    $this->_pages['mods/github_patcher/patch_create.php']['parent']   = 'mods/github_patcher/myown_patches.php';
+    $this->_pages['mods/github_patcher/patch_create.php']['parent']   = 'mods/github_patcher/open_patches.php';
 }
 
 

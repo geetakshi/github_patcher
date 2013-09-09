@@ -75,7 +75,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
     </div>
 
     <div class="row buttons">
-        <input type="button" name="cancel" value=" <?php echo _AT('cancel'); ?> " onclick="location.href='mods/github_patcher/myown_patches.php'" />
+        <input type="button" name="cancel" value=" <?php echo _AT('cancel'); ?> " onclick="location.href='mods/github_patcher/index_admin.php'" />
     </div>
  </div>
 </form>

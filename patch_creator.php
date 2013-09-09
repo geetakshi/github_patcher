@@ -161,9 +161,11 @@ if (isset($_POST['create_patch'])) {
         $missing_fields[] = _AT('github_username');
     }
 
-    $missing_fields = implode(', ', $missing_fields);
-    $msg->addError(array('EMPTY_FIELDS', $missing_fields));
-    $msg->printErrors();
+    if(!empty($missing_fields)) {
+        $missing_fields = implode(', ', $missing_fields);
+        $msg->addError(array('EMPTY_FIELDS', $missing_fields));
+        $msg->printErrors();
+    }
 
     $method = Github\Client::AUTH_HTTP_PASSWORD;
     $username = $_POST['github_username'];
