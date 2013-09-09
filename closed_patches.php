@@ -33,33 +33,5 @@ if(isset($_POST['uninstall']) && isset($_POST['id'])) {
     add_remove_patch('uninstall', $msg, $repo, $client);
 }
 
-if(isset($_POST['patch_test']) && isset($_POST['id'])) {
-    if(!isset($_POST['patch_test_branch'])) {
-        $missing_fields[] = _AT('patch_test_branch');
-        $missing_fields = implode(', ', $missing_fields);
-        $msg->addError(array('EMPTY_FIELDS', $missing_fields));
-        $msg->printErrors();
-    }
-    else {
-        try {
-            if($repo->hasBranch($_POST['patch_test_branch'])) {
-                $msg->addError('BRANCH_ALREADY_EXISTS');
-            }
-            else {
-                $repo->git('git checkout -b '.$_POST['patch_test_branch']);
-            }
-        }
-        catch(RuntimeException $e) {
-            $msg->addError('CANNOT_CHECKOUT_TO_TEST_BRANCH');
-        }
-        if(!$msg->containsErrors()) {
-            add_remove_patch('test', $msg, $repo, $client);
-        }
-        else {
-            $msg->printErrors();
-        }
-    }
-}
-
 require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>

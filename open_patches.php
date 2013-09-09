@@ -35,5 +35,9 @@ if(isset($_POST['uninstall']) && isset($_POST['id'])) {
     add_remove_patch('uninstall', $msg, $repo, $client);
 }
 
+if(isset($_POST['patch_test']) && isset($_POST['id'])) {
+    add_remove_patch('test', $msg, $repo, $client);
+}
+
 require(AT_INCLUDE_PATH.'footer.inc.php');
 ?>

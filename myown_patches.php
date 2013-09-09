@@ -20,11 +20,26 @@ function add_remove_patch($status, $msg, $repo, $client) {
         $msg->addError('CANNOT_CONNECT_TO_GITHUB');
     }
     if(!$msg->containsErrors()) {
+        if($status == 'test') {
+            try {
+                if($repo->hasBranch($_POST['patch_test_branch'])) {
+                    $msg->addError('BRANCH_ALREADY_EXISTS');
+                }
+                else {
+                    $repo->git('git checkout -b '.$_POST['patch_test_branch']);
+                }
+            }
+            catch(RuntimeException $e) {
+                $msg->printErrors('CANNOT_CHECKOUT_TO_TEST_BRANCH');
+            }
+        }
+        else {
+            $repo->git('git checkout master');
+        }
         foreach(array_reverse($commits_list) as $commit) {
             $sha = $commit['sha'];
             if($status == 'install') {
                 try {
-                    $repo->git('git checkout master');
                     $repo->git('git cherry-pick '.$sha);
                     $msg->addFeedback('PATCH_INSTALLED_SUCCESSFULLY');
                 }
@@ -34,7 +49,6 @@ function add_remove_patch($status, $msg, $repo, $client) {
             }
             else if($status == 'uninstall') {
                 try {
-                    $repo->git('git checkout master');
                     $repo->git('git revert --no-edit '.$sha);
                     $msg->addFeedback('PATCH_UNINSTALLED_SUCCESSFULLY');
                 }
@@ -43,12 +57,19 @@ function add_remove_patch($status, $msg, $repo, $client) {
                 }
             }
             else if($status == 'test') {
-                try {
-                    $repo->git('git cherry-pick '.$sha);
-                    $msg->addFeedback('PATCH_APPLIED_TO_TEST_BRANCH');
+                if(!isset($_POST['patch_test_branch'])) {
+                    $missing_fields[] = _AT('patch_test_branch');
+                    $missing_fields = implode(', ', $missing_fields);
+                    $msg->addError(array('EMPTY_FIELDS', $missing_fields));
                 }
-                catch (RuntimeException $e) {
-                    $msg->addError('UNABLE_TO_APPLY_TO_TEST_BRANCH');
+                else {
+                    try {
+                        $repo->git('git cherry-pick '.$sha);
+                        $msg->addFeedback('PATCH_APPLIED_TO_TEST_BRANCH');
+                    }
+                    catch (RuntimeException $e) {
+                        $msg->addError('UNABLE_TO_APPLY_TO_TEST_BRANCH');
+                    }
                 }
             }
         }
