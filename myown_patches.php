@@ -14,7 +14,7 @@
 
 function add_remove_patch($status, $msg, $repo, $client) {
     try {
-        $commits_list = $client->api('pull_request')->commits('atutor', 'ATutor', $_POST['id']);
+        $pr_details = $client->api('pull_request')->show('atutor', 'ATutor', $_POST['id']);
     }
     catch (RuntimeException $e) {
         $msg->addError('CANNOT_CONNECT_TO_GITHUB');
@@ -22,60 +22,30 @@ function add_remove_patch($status, $msg, $repo, $client) {
     if(!$msg->containsErrors()) {
         if($status == 'test') {
             try {
+                $repo->git('git checkout -b '. $_POST['patch_test_branch']);
+            }
+            catch (RuntimeException $e) {
                 if($repo->hasBranch($_POST['patch_test_branch'])) {
                     $msg->addError('BRANCH_ALREADY_EXISTS');
                 }
                 else {
-                    $repo->git('git checkout -b '.$_POST['patch_test_branch']);
+                    $msg->addError('CANNOT_CHECKOUT');
                 }
             }
-            catch(RuntimeException $e) {
-                $msg->printErrors('CANNOT_CHECKOUT_TO_TEST_BRANCH');
-            }
         }
-        else {
+        else if($status == 'install') {
             $repo->git('git checkout master');
         }
-        foreach(array_reverse($commits_list) as $commit) {
-            $sha = $commit['sha'];
-            if($status == 'install') {
-                try {
-                    $repo->git('git cherry-pick '.$sha);
-                    $msg->addFeedback('PATCH_INSTALLED_SUCCESSFULLY');
-                }
-                catch (RuntimeException $e) {
-                    $msg->addError('UNABLE_TO_INSTALL');
-                }
-            }
-            else if($status == 'uninstall') {
-                try {
-                    $repo->git('git revert --no-edit '.$sha);
-                    $msg->addFeedback('PATCH_UNINSTALLED_SUCCESSFULLY');
-                }
-                catch (RuntimeException $e) {
-                    $msg->addError('UNABLE_TO_UNINSTALL');
-                }
-            }
-            else if($status == 'test') {
-                if(!isset($_POST['patch_test_branch'])) {
-                    $missing_fields[] = _AT('patch_test_branch');
-                    $missing_fields = implode(', ', $missing_fields);
-                    $msg->addError(array('EMPTY_FIELDS', $missing_fields));
-                }
-                else {
-                    try {
-                        $repo->git('git cherry-pick '.$sha);
-                        $msg->addFeedback('PATCH_APPLIED_TO_TEST_BRANCH');
-                    }
-                    catch (RuntimeException $e) {
-                        $msg->addError('UNABLE_TO_APPLY_TO_TEST_BRANCH');
-                    }
-                }
-            }
+        $username = $pr_details['head']['user']['login'];
+        $remote = 'git://github.com/'.$username.'/ATutor.git';
+        $branch = $pr_details['head']['ref'];
+        try {
+            $repo->git('git pull '.$remote.' '.$branch);
+        }
+        catch(RuntimeException $e) {
+            $msg->addError('UNABLE_TO_INSTALL');
         }
     }
-    $msg->printErrors();
-    $msg->printFeedbacks();
 }
 
 function print_row($pr_values) {

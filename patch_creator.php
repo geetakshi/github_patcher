@@ -43,7 +43,12 @@ if (isset($_POST['checkout'])) {
             $msg->printFeedbacks();
         }
         catch (RuntimeException $e) {
-            $msg->addError('CANNOT_CHECKOUT');
+            if($repo->hasBranch($_POST['new_branch_checkout'])) {
+                $msg->addError('BRANCH_ALREADY_EXISTS');
+            }
+            else {
+                $msg->addError('CANNOT_CHECKOUT');
+            }
         }
     }
 
