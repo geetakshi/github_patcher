@@ -41,10 +41,17 @@ function add_remove_patch($status, $msg, $repo, $client) {
         $branch = $pr_details['head']['ref'];
         try {
             $repo->git('git pull '.$remote.' '.$branch);
+            $msg->addFeedback('PATCH_INSTALLED_SUCCESSFULLY');
         }
         catch(RuntimeException $e) {
             $msg->addError('UNABLE_TO_INSTALL');
         }
+    }
+    if($msg->containsErrors()) {
+        $msg->printErrors();
+    }
+    if($msg->containsFeedbacks()) {
+        $msg->printFeedbacks();
     }
 }
 
