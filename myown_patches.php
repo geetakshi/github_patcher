@@ -40,13 +40,22 @@ function add_patch($status, $msg, $repo, $client) {
         $remote = 'git://github.com/'.$username.'/ATutor.git';
         $branch = $pr_details['head']['ref'];
         try {
-            $repo->git('git fetch '.$remote);
-            $repo->git('git merge --no-ff '.$remote.'/'.$branch);
+            try {
+                $repo->git('git remote add '.$username.' '.$remote);
+            }
+            catch(RuntimeException $e) {}
+            $repo->git('git fetch '.$username);
+            $repo->git('git merge --no-ff '.$username.'/'.$branch);
             $msg->addFeedback('PATCH_INSTALLED_SUCCESSFULLY');
         }
         catch(RuntimeException $e) {
-            $repo->git('git merge --abort');
-            $msg->addError('UNABLE_TO_INSTALL');
+            try {
+                $repo->git('git merge --abort');
+                $msg->addError('UNABLE_TO_INSTALL');
+            }
+            catch(RuntimeException $e) {
+                $msg->addError('FUNCTIONAL_ERROR');
+            }
         }
     }
     if($msg->containsErrors()) {
@@ -57,7 +66,7 @@ function add_patch($status, $msg, $repo, $client) {
     }
 }
 
-function remove_patch($status, $msg, $repo, $client) {
+function remove_patch($msg, $repo, $client) {
     try {
         $repo->git('git checkout master');
         $log = $repo->git('git log');
@@ -129,8 +138,28 @@ catch(RuntimeException $e) {
 }
 ?>
 </table>
-<span><input type="submit" name="uninstall" value="<?php echo _AT('uninstall'); ?>" style="float:right;"/></span>
-<span><input type="submit" name="install" value="<?php echo _AT('install'); ?>" style="float:right;" /></span>
+<table style="float:right">
+<tr>
+<td>
+<label style="float:right;"><?php echo _AT('install_label');?></label>
+</td>
+</tr>
+<tr>
+<td>
+<input type="submit" name="install" value="<?php echo _AT('install_selected'); ?>" style="float:right;" />
+</td>
+</tr>
+<tr>
+<td>
+<label style="float:right;"><?php echo _AT('uninstall_label');?></label>
+</td>
+</tr>
+<tr>
+<td>
+<input type="submit" name="uninstall" value="<?php echo _AT('uninstall_last_installed'); ?>" style="float:right;"/>
+</td>
+</tr>
+</table>
 <?php
 if($state == 'closed') {
     $state_tab = 'closed_patches';

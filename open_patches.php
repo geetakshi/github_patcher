@@ -31,7 +31,7 @@ if(isset($_POST['install']) && isset($_POST['id'])) {
     add_patch('install', $msg, $repo, $client);
 }
 
-if(isset($_POST['uninstall']) && isset($_POST['id'])) {
+if(isset($_POST['uninstall'])) {
     remove_patch($msg, $repo, $client);
 }
 
