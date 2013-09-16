@@ -71,9 +71,9 @@ function remove_patch($status, $msg, $repo, $client) {
         if($is_merge == 'Merge:') {
             try {
                 $repo->git('git reset --hard HEAD~1');
-                $msg->addFeedback('PATCH_UNINSTALLED_SUCCESSFULLY')
+                $msg->addFeedback('PATCH_UNINSTALLED_SUCCESSFULLY');
             }
-            catch {
+            catch (RuntimeException $e){
                 $msg->addError('UNABLE_TO_UNINSTALL');
             }
         }
