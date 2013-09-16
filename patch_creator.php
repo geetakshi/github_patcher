@@ -25,7 +25,7 @@ $repo = new PHPGit_Repository('../../', false, array('git_executable' => '"'.$_c
 //Checking out to a new branch to make changes
 if (isset($_POST['checkout'])) {
     try {
-        $repo->git('git status');
+        $repo->git('git checkout master');
     }
     catch (RuntimeException $e) {
         $msg->addError('INVALID_GIT_BINARY');

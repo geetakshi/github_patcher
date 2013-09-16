@@ -28,15 +28,15 @@ $client = new Github\Client();
 $repo = new PHPGit_Repository('../../', false, array('git_executable' => '"'.$_config['path_to_git_exec'].'"'));
 
 if(isset($_POST['install']) && isset($_POST['id'])) {
-    add_remove_patch('install', $msg, $repo, $client);
+    add_patch('install', $msg, $repo, $client);
 }
 
 if(isset($_POST['uninstall']) && isset($_POST['id'])) {
-    add_remove_patch('uninstall', $msg, $repo, $client);
+    remove_patch($msg, $repo, $client);
 }
 
 if(isset($_POST['patch_test']) && isset($_POST['id'])) {
-    add_remove_patch('test', $msg, $repo, $client);
+    add_patch('test', $msg, $repo, $client);
 }
 
 require(AT_INCLUDE_PATH.'footer.inc.php');

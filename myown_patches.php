@@ -12,7 +12,7 @@
 /************************************************************************/
 // $Id$
 
-function add_remove_patch($status, $msg, $repo, $client) {
+function add_patch($status, $msg, $repo, $client) {
     try {
         $pr_details = $client->api('pull_request')->show('atutor', 'ATutor', $_POST['id']);
     }
@@ -40,11 +40,45 @@ function add_remove_patch($status, $msg, $repo, $client) {
         $remote = 'git://github.com/'.$username.'/ATutor.git';
         $branch = $pr_details['head']['ref'];
         try {
-            $repo->git('git pull '.$remote.' '.$branch);
+            $repo->git('git fetch '.$remote);
+            $repo->git('git merge --no-ff '.$remote.'/'.$branch);
             $msg->addFeedback('PATCH_INSTALLED_SUCCESSFULLY');
         }
         catch(RuntimeException $e) {
+            $repo->git('git merge --abort');
             $msg->addError('UNABLE_TO_INSTALL');
+        }
+    }
+    if($msg->containsErrors()) {
+        $msg->printErrors();
+    }
+    if($msg->containsFeedbacks()) {
+        $msg->printFeedbacks();
+    }
+}
+
+function remove_patch($status, $msg, $repo, $client) {
+    try {
+        $repo->git('git checkout master');
+        $log = $repo->git('git log');
+    }
+    catch(RuntimeException $e) {
+        $msg->addError('UNABLE_TO_UNINSTALL');
+    }
+    if(!$msg->containsErrors()) {
+        $commits = preg_split("/\r\n|\n|\r/", $log);
+        $is_merge = substr($commits['1'], 0, 6);
+        if($is_merge == 'Merge:') {
+            try {
+                $repo->git('git reset --hard HEAD~1');
+                $msg->addFeedback('PATCH_UNINSTALLED_SUCCESSFULLY')
+            }
+            catch {
+                $msg->addError('UNABLE_TO_UNINSTALL');
+            }
+        }
+        else {
+            $msg->addError('PATCH_NOT_INSTALLED');
         }
     }
     if($msg->containsErrors()) {
