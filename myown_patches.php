@@ -12,6 +12,33 @@
 /************************************************************************/
 // $Id$
 
+function find_last_patch($repo, $msg) {
+    $last_patch = array();
+    try {
+        $repo->git('git checkout master');
+    }
+    catch (RuntimeException $e) {}
+    try {
+        $list_patch = $repo->git('git log --format=medium');
+    }
+    catch (RuntimeException $e) {}
+    if(isset($list_patch)) {
+        $split_result = preg_split("/\r\n|\n|\r/", $list_patch);
+        $is_merge = substr($split_result['1'], 0, 6);
+        if($is_merge == 'Merge:') {
+            $author = $split_result['2'];
+            $date = $split_result['3'];
+            $commit = $split_result['5'];
+            $last_patch = array (
+                "date" => $date,
+                "author" => $author,
+                "commit" => $commit,
+            );
+        }
+    }
+    return $last_patch;
+}
+
 function add_patch($status, $msg, $repo, $client) {
     try {
         $pr_details = $client->api('pull_request')->show('atutor', 'ATutor', $_POST['id']);
@@ -69,7 +96,7 @@ function add_patch($status, $msg, $repo, $client) {
 function remove_patch($msg, $repo, $client) {
     try {
         $repo->git('git checkout master');
-        $log = $repo->git('git log');
+        $log = $repo->git('git log --format=medium');
     }
     catch(RuntimeException $e) {
         $msg->addError('UNABLE_TO_UNINSTALL');
@@ -114,7 +141,7 @@ function print_row($state, $pr_values) {
     </tr>
 <?php } ?>
 
-<?php function list_patches($state, $msg, $per_page = 20) { ?>
+<?php function list_patches($repo, $state, $msg, $per_page = 20) { ?>
     <form name="form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
     <table summary="" class="data" rules="cols" align="center" style="width: 100%;">
     <thead>
@@ -147,26 +174,30 @@ function print_row($state, $pr_values) {
     ?>
 </table>
 <table style="float:right">
-<tr>
-<td>
+<tr><td>
 <label style="float:right;"><?php echo _AT('install_label');?></label>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr>
+<tr><td>
 <input type="submit" name="install" value="<?php echo _AT('install_selected'); ?>" style="float:right;" />
-</td>
-</tr>
-<tr>
-<td>
+</td></tr>
+<tr><td>
 <label style="float:right;"><?php echo _AT('uninstall_label');?></label>
-</td>
-</tr>
-<tr>
-<td>
+</td></tr>
+<tr><td>
 <input type="submit" name="uninstall" value="<?php echo _AT('uninstall_last_installed'); ?>" style="float:right;"/>
-</td>
-</tr>
+</td></tr>
+<tr><td>
+<h6 style="float:right;"><?php $result = find_last_patch($repo, $msg); echo _AT('last_patch_detail'); ?></h6>
+</td></tr>
+<tr><td>
+<p style="float:right;"><?php if(!empty($result)) echo $result['commit']; else echo _AT('PATCH_NOT_INSTALLED'); ?></p>
+</td></tr>
+<tr><td>
+<p style="float:right;"><?php echo $result['date']; ?></p>
+</td></tr>
+<tr><td>
+<p style="float:right;"><?php echo $result['author']; ?></p>
+</td></tr>
 </table>
 <?php
     if($state == 'closed') {

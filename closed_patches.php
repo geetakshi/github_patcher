@@ -20,10 +20,11 @@ require_once('php-git-repo/lib/PHPgit/Repository.php');
 require_once('php-github-api/library/autoload.php');
 include('myown_patches.php');
 
-list_patches('closed', $msg);
-
 $client = new Github\Client();
 $repo = new PHPGit_Repository('../../', false, array('git_executable' => '"'.$_config['path_to_git_exec'].'"'));
+
+list_patches($repo, 'closed', $msg);
+
 
 if(isset($_POST['install']) && isset($_POST['id'])) {
     add_patch('install', $msg, $repo, $client);
