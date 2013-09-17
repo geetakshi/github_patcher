@@ -105,6 +105,7 @@ function print_row($pr_values) {
         <td><label><?php echo $pr_values['number']; ?></label></td>
         <td><label><?php echo $pr_values['title']; ?></label></td>
         <td><label><?php echo $pr_values['state']; ?></label></td>
+        <td><label><?php echo $pr_values['updated_at']; ?></label></td>
         <td><label><?php echo $pr_values['merged_at']; ?></label></td>
         <td><label><?php echo $pr_values['user']['login']; ?></label></td>
     </tr>
@@ -119,6 +120,7 @@ function print_row($pr_values) {
     <th scope="col"><?php echo _AT('patch_id'); ?></th>
     <th scope="col"><?php echo _AT('patch_title'); ?></th>
     <th scope="col"><?php echo _AT('pr_status'); ?></th>
+    <th scope="col"><?php echo _AT('updated_at'); ?></th>
     <th scope="col"><?php echo _AT('merged_at'); ?></th>
     <th scope="col"><?php echo _AT('author'); ?></th>
 </tr>
