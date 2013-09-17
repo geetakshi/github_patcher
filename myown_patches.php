@@ -98,47 +98,53 @@ function remove_patch($msg, $repo, $client) {
     }
 }
 
-function print_row($pr_values) {
+function print_row($state, $pr_values) {
 ?>
     <tr>
         <td><input type="radio" name="id" value="<?php echo $pr_values['number']; ?>"></td>
         <td><label><?php echo $pr_values['number']; ?></label></td>
         <td><label><?php echo $pr_values['title']; ?></label></td>
         <td><label><?php echo $pr_values['state']; ?></label></td>
-        <td><label><?php echo $pr_values['updated_at']; ?></label></td>
-        <td><label><?php echo $pr_values['merged_at']; ?></label></td>
+        <td><label><?php if($state == 'closed')
+                            echo $pr_values['merged_at'];
+                          else if($state == 'open')
+                            echo $pr_values['updated_at'];
+                    ?></label></td>
         <td><label><?php echo $pr_values['user']['login']; ?></label></td>
     </tr>
 <?php } ?>
 
 <?php function list_patches($state, $msg, $per_page = 20) { ?>
-<form name="form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-<table summary="" class="data" rules="cols" align="center" style="width: 100%;">
-<thead>
-<tr>
-    <th scope="col">&nbsp;</th>
-    <th scope="col"><?php echo _AT('patch_id'); ?></th>
-    <th scope="col"><?php echo _AT('patch_title'); ?></th>
-    <th scope="col"><?php echo _AT('pr_status'); ?></th>
-    <th scope="col"><?php echo _AT('updated_at'); ?></th>
-    <th scope="col"><?php echo _AT('merged_at'); ?></th>
-    <th scope="col"><?php echo _AT('author'); ?></th>
-</tr>
-</thead>
+    <form name="form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+    <table summary="" class="data" rules="cols" align="center" style="width: 100%;">
+    <thead>
+    <tr>
+        <th scope="col">&nbsp;</th>
+        <th scope="col"><?php echo _AT('patch_id'); ?></th>
+        <th scope="col"><?php echo _AT('patch_title'); ?></th>
+        <th scope="col"><?php echo _AT('pr_status'); ?></th>
+        <th scope="col"><?php if($state == 'closed')
+                            echo _AT('merged_at');
+                          else if($state == 'open')
+                            echo _AT('updated_at');
+                    ?></th>
+        <th scope="col"><?php echo _AT('author'); ?></th>
+    </tr>
+    </thead>
 
-<?php
-$current_page = (@$_GET['page'])?($_GET['page']):1;
-$client = new Github\Client();
-try {
-    $PullRequest = $client->api('pull_request')->all('atutor', 'ATutor', $state, $current_page, $per_page);
-    foreach($PullRequest as $pr_values) {
-        print_row($pr_values);
-    }
-}
-catch(RuntimeException $e) {
-    $msg->printErrors('CANNOT_CONNECT_TO_GITHUB');
-}
-?>
+    <?php
+        $current_page = (@$_GET['page'])?($_GET['page']):1;
+        $client = new Github\Client();
+        try {
+            $PullRequest = $client->api('pull_request')->all('atutor', 'ATutor', $state, $current_page, $per_page);
+            foreach($PullRequest as $pr_values) {
+                print_row($state, $pr_values);
+            }
+        }
+        catch(RuntimeException $e) {
+            $msg->printErrors('CANNOT_CONNECT_TO_GITHUB');
+        }
+    ?>
 </table>
 <table style="float:right">
 <tr>
@@ -163,11 +169,11 @@ catch(RuntimeException $e) {
 </tr>
 </table>
 <?php
-if($state == 'closed') {
-    $state_tab = 'closed_patches';
-}
-else if($state == 'open') {
-    $state_tab = 'open_patches';
+    if($state == 'closed') {
+        $state_tab = 'closed_patches';
+    }
+    else if($state == 'open') {
+        $state_tab = 'open_patches';
 ?>
 <p><?php echo _AT('patch_test_description') ?></p>
 <label><?php echo _AT('patch_test_branch'); ?></label>
