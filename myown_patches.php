@@ -12,6 +12,15 @@
 /************************************************************************/
 // $Id$
 
+/**
+* Function to find the details of last installed patch
+* @access  public
+* @param   object $repo To access the functions providing git functionality
+* @param   object $msg To manage error and feedback handling
+* @return  array details of last installed patch
+* @status  stable
+* @author  Geetakshi Batra
+*/
 function find_last_patch($repo, $msg) {
     $last_patch = array();
     try {
@@ -39,6 +48,16 @@ function find_last_patch($repo, $msg) {
     return $last_patch;
 }
 
+/**
+* Function to install a patch
+* @access  public
+* @param   string $status To check if the patch is open or closed
+* @param   object $repo To access the functions providing git functionality
+* @param   object $msg To manage error and feedback handling
+* @param   object $client To have interaction of code with GitHub
+* @status  stable
+* @author  Geetakshi Batra
+*/
 function add_patch($status, $msg, $repo, $client) {
     try {
         $pr_details = $client->api('pull_request')->show('atutor', 'ATutor', $_POST['id']);
@@ -93,6 +112,15 @@ function add_patch($status, $msg, $repo, $client) {
     }
 }
 
+/**
+* Function to uninstall a patch
+* @access  public
+* @param   object $repo To access the functions providing git functionality
+* @param   object $msg To manage error and feedback handling
+* @param   object $client To have interaction of code with GitHub
+* @status  stable
+* @author  Geetakshi Batra
+*/
 function remove_patch($msg, $repo, $client) {
     try {
         $repo->git('git checkout master');
@@ -125,6 +153,14 @@ function remove_patch($msg, $repo, $client) {
     }
 }
 
+/**
+* Function to print list of patches
+* @access  public
+* @param   string $status To check if the patch is open or closed
+* @param   array $pr_values To fetch details of a particular patch
+* @status  stable
+* @author  Geetakshi Batra
+*/
 function print_row($state, $pr_values) {
 ?>
     <tr>
