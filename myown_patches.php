@@ -154,9 +154,9 @@ function remove_patch($msg, $repo, $client) {
 }
 
 /**
-* Function to print list of patches
+* Function to print details of a particular patch
 * @access  public
-* @param   string $status To check if the patch is open or closed
+* @param   string $state To check if the patch is open or closed
 * @param   array $pr_values To fetch details of a particular patch
 * @status  stable
 * @author  Geetakshi Batra
@@ -175,9 +175,19 @@ function print_row($state, $pr_values) {
                     ?></label></td>
         <td><label><?php echo $pr_values['user']['login']; ?></label></td>
     </tr>
-<?php } ?>
+<?php }
 
-<?php function list_patches($repo, $state, $msg, $per_page = 20) { ?>
+/**
+* Function to print list of patches available
+* @access  public
+* @param   object $repo To access the functions providing git functionality
+* @param   string $state To check if the patch is open or closed
+* @param   object $msg To manage error and feedback handling
+* @param   int $per_page Number of patches to appear on a single page
+* @status  stable
+* @author  Geetakshi Batra
+*/
+function list_patches($repo, $state, $msg, $per_page = 20) { ?>
     <form name="form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
     <table summary="" class="data" rules="cols" align="center" style="width: 100%;">
     <thead>
@@ -208,57 +218,57 @@ function print_row($state, $pr_values) {
             $msg->printErrors('CANNOT_CONNECT_TO_GITHUB');
         }
     ?>
-</table>
-<table style="float:right">
-<tr><td>
-<label style="float:right;"><?php echo _AT('install_label');?></label>
-</td></tr>
-<tr><td>
-<input type="submit" name="install" value="<?php echo _AT('install_selected'); ?>" style="float:right;" />
-</td></tr>
-<tr><td>
-<label style="float:right;"><?php echo _AT('uninstall_label');?></label>
-</td></tr>
-<tr><td>
-<input type="submit" name="uninstall" value="<?php echo _AT('uninstall_last_installed'); ?>" style="float:right;"/>
-</td></tr>
-<tr><td>
-<h6 style="float:right;"><?php $result = find_last_patch($repo, $msg); echo _AT('last_patch_detail'); ?></h6>
-</td></tr>
-<tr><td>
-<p style="float:right;"><?php if(!empty($result)) echo $result['commit']; else echo _AT('PATCH_NOT_INSTALLED'); ?></p>
-</td></tr>
-<tr><td>
-<p style="float:right;"><?php echo $result['date']; ?></p>
-</td></tr>
-<tr><td>
-<p style="float:right;"><?php echo $result['author']; ?></p>
-</td></tr>
-</table>
-<?php
-    if($state == 'closed') {
-        $state_tab = 'closed_patches';
+    </table>
+    <table style="float:right">
+    <tr><td>
+    <label style="float:right;"><?php echo _AT('install_label');?></label>
+    </td></tr>
+    <tr><td>
+    <input type="submit" name="install" value="<?php echo _AT('install_selected'); ?>" style="float:right;" />
+    </td></tr>
+    <tr><td>
+    <label style="float:right;"><?php echo _AT('uninstall_label');?></label>
+    </td></tr>
+    <tr><td>
+    <input type="submit" name="uninstall" value="<?php echo _AT('uninstall_last_installed'); ?>" style="float:right;"/>
+    </td></tr>
+    <tr><td>
+    <h6 style="float:right;"><?php $result = find_last_patch($repo, $msg); echo _AT('last_patch_detail'); ?></h6>
+    </td></tr>
+    <tr><td>
+    <p style="float:right;"><?php if(!empty($result)) echo $result['commit']; else echo _AT('PATCH_NOT_INSTALLED'); ?></p>
+    </td></tr>
+    <tr><td>
+    <p style="float:right;"><?php echo $result['date']; ?></p>
+    </td></tr>
+    <tr><td>
+    <p style="float:right;"><?php echo $result['author']; ?></p>
+    </td></tr>
+    </table>
+    <?php
+        if($state == 'closed') {
+            $state_tab = 'closed_patches';
+        }
+        else if($state == 'open') {
+            $state_tab = 'open_patches';
+    ?>
+            <p><?php echo _AT('patch_test_description') ?></p>
+            <label><?php echo _AT('patch_test_branch'); ?></label>
+            <input type="text" name="patch_test_branch" maxlength="100" size="30" /><br />
+            <span><input type="submit" name="patch_test" value="<?php echo _AT('patch_test'); ?>" /><br /></span>
+            <?php
+        }
+
+    if ($current_page > 1)
+        echo '<a href="mods/github_patcher/'.$state_tab.'.php?page=' . ($current_page - 1) . '">&lt; Previous page</a><span class="tab"></span>';
+
+    echo 'Page '. $current_page;
+
+    if(count($PullRequest) == $per_page) {
+        echo '<span class="tab"></span><a href="mods/github_patcher/'.$state_tab.'.php?page=' . ($current_page + 1) . '" class="right">Next page &gt;</a><br />';
     }
-    else if($state == 'open') {
-        $state_tab = 'open_patches';
-?>
-<p><?php echo _AT('patch_test_description') ?></p>
-<label><?php echo _AT('patch_test_branch'); ?></label>
-<input type="text" name="patch_test_branch" maxlength="100" size="30" /><br />
-<span><input type="submit" name="patch_test" value="<?php echo _AT('patch_test'); ?>" /><br /></span>
-<?php
-}
-
-if ($current_page > 1)
-    echo '<a href="mods/github_patcher/'.$state_tab.'.php?page=' . ($current_page - 1) . '">&lt; Previous page</a><span class="tab"></span>';
-
-echo 'Page '. $current_page;
-
-if(count($PullRequest) == $per_page) {
-    echo '<span class="tab"></span><a href="mods/github_patcher/'.$state_tab.'.php?page=' . ($current_page + 1) . '" class="right">Next page &gt;</a><br />';
-}
-else if(count($PullRequest) == 0) {
-    echo '<span class="tab"></span><a mods/github_patcher/'.$state_tab.'.php?page=' . 1 . '" class="right">Go To Page 1 &gt;</a><br />';
-}
+    else if(count($PullRequest) == 0) {
+        echo '<span class="tab"></span><a mods/github_patcher/'.$state_tab.'.php?page=' . 1 . '" class="right">Go To Page 1 &gt;</a><br />';
+    }
 }?>
 </form>
