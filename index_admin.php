@@ -92,7 +92,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
     <div class="input-form">
         <div class="row">
             <p><label for="path_to_git_exec"><?php echo _AT('path_to_git_exec'); ?></label></p>
-            <small><p> <?php echo _AT('git_executable_description') ?> </p></small>
+            <small><p> <?php echo _AT('git_executable_description'); ?> </p></small>
             <input type="text" name="path_to_git_exec" value="<?php echo $_config['path_to_git_exec']; ?>" id="path_to_git_exec" size="30" style="min-width: 65%;" />
         </div>
         <div class="row">
