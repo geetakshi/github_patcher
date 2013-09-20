@@ -24,7 +24,7 @@ INSERT INTO `language_text` VALUES ('en', '_template','git_username','Git Userna
 INSERT INTO `language_text` VALUES ('en', '_template','git_email','Git email',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','github_credentials','Github Credentials',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','input_new_branch','Input name of new branch to checkout',NOW(),'');
-INSERT INTO `language_text` VALUES ('en', '_template','make_chenges','Make Changes in files',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_template','make_changes','Make Changes in files',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','commit_changes','Commit the made changes',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','test_changes','Test the Changes before making a Patch',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','push_changes','Push the Changes',NOW(),'');
@@ -36,13 +36,14 @@ INSERT INTO `language_text` VALUES ('en', '_template','updated_at','Updated At',
 INSERT INTO `language_text` VALUES ('en', '_template','open_patches','Open Patches',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','closed_patches','Closed Patches',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','patch_test','Test Patch',NOW(),'');
-INSERT INTO `language_text` VALUES ('en', '_template','patch_test_description','If You Want To Test This Feature On A Separate Branch Before Installing On Production Board',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_template','patch_test_description','Test This Feature On A Separate Branch Before Installing (Recommended)',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','patch_test_branch','Testing Branch',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','uninstall_last_installed','Uninstall',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','install_selected','Install',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','install_label','Install the Selected Patch',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','uninstall_label','Uninstall the Last Patch Installed',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','last_patch_detail','Details of Last Installed Patch',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_template','PATCH_NOT_INSTALLED','Previously Installed Patch does not Exist',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_msgs', 'AT_ERROR_GITHUB_PATCHER_GIT_EXE_EMPTY', 'Path to Git Executable Empty', NOW(), '');
 INSERT INTO `language_text` VALUES ('en', '_msgs', 'AT_ERROR_GITHUB_PATCHER_GIT_USERNAME_EMPTY', 'Git Username Field Empty', NOW(), '');
 INSERT INTO `language_text` VALUES ('en', '_msgs', 'AT_ERROR_GITHUB_PATCHER_GIT_EMAIL_EMPTY', 'Git E-mail Field Empty', NOW(), '');

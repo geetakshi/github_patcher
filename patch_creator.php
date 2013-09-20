@@ -28,7 +28,7 @@ if (isset($_POST['checkout'])) {
         $repo->git('git checkout master');
     }
     catch (RuntimeException $e) {
-        $msg->addError('INVALID_GIT_BINARY');
+        $msg->addError('AT_ERROR_INVALID_GIT_BINARY');
     }
 
     $_POST['new_branch_checkout'] = trim($_POST['new_branch_checkout']);
@@ -39,15 +39,15 @@ if (isset($_POST['checkout'])) {
     else if (!$missing_fields) {
         try {
             $repo->git('git checkout -b '. $_POST['new_branch_checkout']);
-            $msg->addFeedback('CHECKED_OUT');
+            $msg->addFeedback('AT_FEEDBACK_CHECKED_OUT');
             $msg->printFeedbacks();
         }
         catch (RuntimeException $e) {
             if($repo->hasBranch($_POST['new_branch_checkout'])) {
-                $msg->addError('BRANCH_ALREADY_EXISTS');
+                $msg->addError('AT_ERROR_BRANCH_ALREADY_EXISTS');
             }
             else {
-                $msg->addError('CANNOT_CHECKOUT');
+                $msg->addError('AT_ERROR_CANNOT_CHECKOUT');
             }
         }
     }
@@ -108,7 +108,7 @@ if (isset($_POST['commit'])) {
                 $repo->git('git add '.$check);
             }
             catch (RuntimeException $e) {
-                $msg->addError('UNABLE_TO_ADD_MOD');
+                $msg->addError('AT_ERROR_UNABLE_TO_ADD_MOD');
             }
         }
         if (!empty($_POST['new_select_file']))
@@ -117,7 +117,7 @@ if (isset($_POST['commit'])) {
                 $repo->git('git add '.$check);
             }
             catch (RuntimeException $e) {
-                $msg->addError('UNABLE_TO_ADD_NEW');
+                $msg->addError('AT_ERROR_UNABLE_TO_ADD_NEW');
             }
         }
         if (!empty($_POST['del_select_file']))
@@ -126,16 +126,16 @@ if (isset($_POST['commit'])) {
                 $repo->git('git rm '.$check);
             }
             catch (RuntimeException $e) {
-                $msg->addError('UNABLE_TO_DELETE');
+                $msg->addError('AT_ERROR_UNABLE_TO_DELETE');
             }
         }
         try {
             $repo->git('git commit -m "'.$_POST['commit_message'].'" --author="'.$_config['git_username'].' < '.$_config['git_email'].' >'.'"');
-            $msg->addFeedback('COMMITTED');
+            $msg->addFeedback('AT_FEEDBACK_COMMITTED');
             $msg->printFeedbacks();
         }
         catch (RuntimeException $e) {
-            $msg->addError('CANNOT_COMMIT');
+            $msg->addError('AT_ERROR_CANNOT_COMMIT');
         }
         $msg->printErrors();
     }
@@ -147,11 +147,11 @@ if (isset($_POST['push'])) {
         $_POST['github_username'] = trim($_POST['github_username']);
         $_POST['github_password'] = trim($_POST['github_password']);
         $repo->git('git push https://'.$_POST["github_username"].':'.$_POST["github_password"].'@github.com/'.$_POST["github_username"].'/ATutor.git '.$_POST["new_branch_checkout"]);
-        $msg->addFeedback('PUSHED');
+        $msg->addFeedback('AT_FEEDBACK_PUSHED');
         $msg->printFeedbacks();
     }
     catch (RuntimeException $e) {
-        $msg->printErrors('CANNOT_PUSH');
+        $msg->printErrors('AT_ERROR_CANNOT_PUSH');
     }
 }
 
@@ -184,11 +184,11 @@ if (isset($_POST['create_patch'])) {
             'title' => $_POST['pr_title'],
             'body'  => $_POST['pr_body']
         ));
-        $msg->addFeedback('PR_SUCCESS');
+        $msg->addFeedback('AT_FEEDBACK_PR_SUCCESS');
         $msg->printFeedbacks();
     }
     catch (RuntimeException $e) {
-        $msg->printErrors('PR_FAILED');
+        $msg->printErrors('AT_ERROR_PR_FAILED');
     }
 }
 

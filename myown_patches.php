@@ -63,7 +63,7 @@ function add_patch($status, $msg, $repo, $client) {
         $pr_details = $client->api('pull_request')->show('atutor', 'ATutor', $_POST['id']);
     }
     catch (RuntimeException $e) {
-        $msg->addError('CANNOT_CONNECT_TO_GITHUB');
+        $msg->addError('AT_ERROR_CANNOT_CONNECT_TO_GITHUB');
     }
     if(!$msg->containsErrors()) {
         if($status == 'test') {
@@ -72,10 +72,10 @@ function add_patch($status, $msg, $repo, $client) {
             }
             catch (RuntimeException $e) {
                 if($repo->hasBranch($_POST['patch_test_branch'])) {
-                    $msg->addError('BRANCH_ALREADY_EXISTS');
+                    $msg->addError('AT_ERROR_BRANCH_ALREADY_EXISTS');
                 }
                 else {
-                    $msg->addError('CANNOT_CHECKOUT');
+                    $msg->addError('AT_ERROR_CANNOT_CHECKOUT');
                 }
             }
         }
@@ -92,15 +92,15 @@ function add_patch($status, $msg, $repo, $client) {
             catch(RuntimeException $e) {}
             $repo->git('git fetch '.$username);
             $repo->git('git merge --no-ff '.$username.'/'.$branch);
-            $msg->addFeedback('PATCH_INSTALLED_SUCCESSFULLY');
+            $msg->addFeedback('AT_FEEDBACK_PATCH_INSTALLED_SUCCESSFULLY');
         }
         catch(RuntimeException $e) {
             try {
                 $repo->git('git merge --abort');
-                $msg->addError('UNABLE_TO_INSTALL');
+                $msg->addError('AT_ERROR_UNABLE_TO_INSTALL');
             }
             catch(RuntimeException $e) {
-                $msg->addError('FUNCTIONAL_ERROR');
+                $msg->addError('AT_ERROR_FUNCTIONAL_ERROR');
             }
         }
     }
@@ -127,7 +127,7 @@ function remove_patch($msg, $repo, $client) {
         $log = $repo->git('git log --format=medium');
     }
     catch(RuntimeException $e) {
-        $msg->addError('UNABLE_TO_UNINSTALL');
+        $msg->addError('AT_ERROR_UNABLE_TO_UNINSTALL');
     }
     if(!$msg->containsErrors()) {
         $commits = preg_split("/\r\n|\n|\r/", $log);
@@ -135,14 +135,14 @@ function remove_patch($msg, $repo, $client) {
         if($is_merge == 'Merge:') {
             try {
                 $repo->git('git reset --hard HEAD~1');
-                $msg->addFeedback('PATCH_UNINSTALLED_SUCCESSFULLY');
+                $msg->addFeedback('AT_FEEDBACK_PATCH_UNINSTALLED_SUCCESSFULLY');
             }
             catch (RuntimeException $e){
-                $msg->addError('UNABLE_TO_UNINSTALL');
+                $msg->addError('AT_ERROR_UNABLE_TO_UNINSTALL');
             }
         }
         else {
-            $msg->addError('PATCH_NOT_INSTALLED');
+            $msg->addError('AT_ERROR_PATCH_NOT_INSTALLED');
         }
     }
     if($msg->containsErrors()) {
@@ -215,7 +215,7 @@ function list_patches($repo, $state, $msg, $per_page = 20) { ?>
             }
         }
         catch(RuntimeException $e) {
-            $msg->printErrors('CANNOT_CONNECT_TO_GITHUB');
+            $msg->printErrors('AT_ERROR_CANNOT_CONNECT_TO_GITHUB');
         }
     ?>
     </table>
