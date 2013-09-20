@@ -28,15 +28,15 @@ if (isset($_POST['submit'])) {
     $_POST['git_username'] = trim($_POST['git_username']);
 
     if (!$_POST['path_to_git_exec']){
-        $msg->addError('AT_ERROR_GITHUB_PATCHER_GIT_EXE_EMPTY');
+        $msg->addError('GITHUB_PATCHER_GIT_EXE_EMPTY');
     }
 
     if (!$_POST['git_username']){
-        $msg->addError('AT_ERROR_GITHUB_PATCHER_GIT_USERNAME_EMPTY');
+        $msg->addError('GITHUB_PATCHER_GIT_USERNAME_EMPTY');
     }
 
     if (!$_POST['git_email']){
-        $msg->addError('AT_ERROR_GITHUB_PATCHER_GIT_EMAIL_EMPTY');
+        $msg->addError('GITHUB_PATCHER_GIT_EMAIL_EMPTY');
     }
 
     //storing the path to git executable, git username, and git email-id in the database
@@ -47,20 +47,20 @@ if (isset($_POST['submit'])) {
             $git_repo->git('git status');
         }
         catch (RuntimeException $e) {
-            $msg->addError('AT_ERROR_INVALID_GIT_BINARY');
+            $msg->addError('INVALID_GIT_BINARY');
         }
         if(!$msg->containsErrors()) {
             queryDB('REPLACE INTO %sconfig VALUES ("path_to_git_exec", "%s")', array(TABLE_PREFIX, $_POST['path_to_git_exec']));
-            $msg->addFeedback('AT_FEEDBACK_GITHUB_PATCHER_GIT_EXEC_SAVED');
+            $msg->addFeedback('GITHUB_PATCHER_GIT_EXEC_SAVED');
         }
 
         $_POST['git_username'] = $addslashes($_POST['git_username']);
         queryDB('REPLACE INTO %sconfig VALUES ("git_username", "%s")', array(TABLE_PREFIX, $_POST['git_username']));
-        $msg->addFeedback('AT_FEEDBACK_GITHUB_PATCHER_GIT_USERNAME_SAVED');
+        $msg->addFeedback('GITHUB_PATCHER_GIT_USERNAME_SAVED');
 
         $_POST['git_email'] = $addslashes($_POST['git_email']);
         queryDB('REPLACE INTO %sconfig VALUES ("git_email", "%s")', array(TABLE_PREFIX, $_POST['git_email']));
-        $msg->addFeedback('AT_FEEDBACK_GITHUB_PATCHER_GIT_EMAIL_SAVED');
+        $msg->addFeedback('GITHUB_PATCHER_GIT_EMAIL_SAVED');
 
         header('Location: '.$_SERVER['PHP_SELF']);
         exit;
