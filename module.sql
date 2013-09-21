@@ -13,7 +13,7 @@ INSERT INTO `language_text` VALUES ('en', '_template','step1_checkout','STEP 1: 
 INSERT INTO `language_text` VALUES ('en', '_template','step2_changes','STEP 2: Make Changes',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','step3_commit','STEP 3: Commit the Changes',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','step4_test','STEP 4: Test the Changes',NOW(),'');
-INSERT INTO `language_text` VALUES ('en', '_template','step5_push','STEP 5: push the Changes',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_template','step5_push','STEP 5: Push the Changes',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','step6_create','STEP 6: Create a Patch',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','github_username','GitHub Username',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','github_password','GitHub Password',NOW(),'');
@@ -29,7 +29,7 @@ INSERT INTO `language_text` VALUES ('en', '_template','commit_changes','Commit t
 INSERT INTO `language_text` VALUES ('en', '_template','test_changes','Test the Changes before making a Patch',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','push_changes','Push the Changes',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','create_pr','Create a patch to be available as a Pull Request on GitHub',NOW(),'');
-INSERT INTO `language_text` VALUES ('en', '_template','git_executable_description','On most Unix system, it is "/usr/bin/git". On Windows, it may be "C:\\Program Files\\Git\\bin\\git.exe".',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_template','git_executable_description','On most Unix system, it is "/usr/bin/git". On Windows, it may be "C:\\\\Program Files\\\\Git\\\\bin\\\\git.exe".',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','pr_status','Status',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','merged_at','Merged At',NOW(),'');
 INSERT INTO `language_text` VALUES ('en', '_template','updated_at','Updated At',NOW(),'');

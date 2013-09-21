@@ -50,16 +50,15 @@ require (AT_INCLUDE_PATH.'header.inc.php');
         <p> <?php echo _AT('test_changes'); ?> </p>
     </div>
 
-    <div class="row" style="border-width:thin; border-style:solid; padding: 5px 5px 5px 5px; margin:5px 5px 5px 5px">
-        <h4><?php echo _AT('github_credentials') ?></h4><br />
-        <label for="github_username"><?php echo _AT('github_username'); ?></label><br />
-        <input id="github_username" name="github_username" type="text" maxlength="100" size="30" /><br />
-        <label for="github_password"><?php echo _AT('github_password'); ?></label><br />
-        <input id="github_password" name="github_password" type="password" maxlength="100" size="30" /><br />
-    </div>
-
     <div class="row">
         <h2><?php echo _AT('step5_push') ?></h2><br />
+        <div class="row" style="border-width:thin; border-style:solid; padding: 5px; margin:5px;">
+            <h4><?php echo _AT('github_credentials') ?></h4><br />
+            <label for="github_username"><?php echo _AT('github_username'); ?></label><br />
+            <input id="github_username" name="github_username" type="text" maxlength="100" size="30" /><br />
+            <label for="github_password"><?php echo _AT('github_password'); ?></label><br />
+            <input id="github_password" name="github_password" type="password" maxlength="100" size="30" /><br />
+        </div>
         <p> <?php echo _AT('push_changes'); ?> </p>
         <input type="submit" name="push" value=" <?php echo _AT('push'); ?> "/>
     </div>

@@ -27,7 +27,7 @@ ATutor.mods.github_patcher = ATutor.mods.github_patcher || {};
 $(document).ready(function() {
     $("#select_files").click(function() {
         $.post('mods/github_patcher/patch_creator.php', {'select_files_to_add': 1}, function(obj) {
-            $("#files").html('<div id="inner" style="border-width:thin; border-style:solid; padding: 5px 5px 5px 5px; margin:5px 5px 5px 5px"></div>');
+            $("#files").html('<div id="inner" style="border-width:thin; border-style:solid; padding: 5px; margin:5px;"></div>');
             var data = jQuery.parseJSON(obj)
             $.each(data, function(key, value) {
                 if (key == 'mod') {
